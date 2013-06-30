@@ -1,4 +1,8 @@
 test:
-	@./node_modules/.bin/mocha -u bdd
+	@./node_modules/.bin/mocha -u bdd -R nyan
 
-.PHONY: test
+acceptance:
+	@./node_modules/.bin/mocha -u bdd -R nyan \
+		test/acceptance/*.js
+
+.PHONY: test acceptance
