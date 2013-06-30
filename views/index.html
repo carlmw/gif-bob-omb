@@ -5,6 +5,26 @@
   li {
     float: left;
     text-align: center;
+    overflow: hidden;
+    border-radius: 20px;
+    margin: 8px;
+    height: 100px;
+  }
+  .file-name {
+    padding: 4px 0;
+    position: relative;
+    bottom: 18px;
+    z-index: 2;
+    font-size: 0.5em;
+    height: 10px;
+    line-height: 10px;
+    font-family: Menlo, monospace;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  a {
+    text-decoration: none;
   }
 </style>
 <ul>
@@ -12,7 +32,7 @@
   <li>
     <a href="{{host}}/{{.}}">
       <img src="frame/{{.}}" />
-      <div>{{.}}</div>
+      <div class="file-name">{{.}}</div>
     </a>
   </li>
 {{/files}}
