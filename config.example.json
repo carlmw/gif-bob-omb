@@ -1,0 +1,5 @@
+{
+  "targetHost": "http://gifserver.com",
+  "port": "3000",
+  "originals": "path/to/gifs/"
+}

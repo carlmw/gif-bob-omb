@@ -1,0 +1,19 @@
+<style>
+  ul {
+    list-style: none
+  }
+  li {
+    float: left;
+    text-align: center;
+  }
+</style>
+<ul>
+{{#files}}
+  <li>
+    <a href="{{host}}/{{.}}">
+      <img src="frame/{{.}}" />
+      <div>{{.}}</div>
+    </a>
+  </li>
+{{/files}}
+</ul>
