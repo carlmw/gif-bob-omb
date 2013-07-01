@@ -23,15 +23,41 @@ describe('fromCache', function () {
   });
 
   describe("when the file is not in the cache", function () {
-    it("calls the fallback with the file name and callback", function () {
+    it("calls the fallback with the file name", function () {
       var fallback = sinon.mock(),
           callback = sinon.stub();
-      fallback.withArgs('roflcopter.gif', callback);
+      fallback.withArgs('roflcopter.gif');
       sinon.stub(client, 'get').callsArgWith(1, null, null);
 
       subject('roflcopter.gif', callback, fallback);
 
       fallback.verify();
+    });
+
+    describe("when the fallback has been called", function () {
+      var fallback;
+      beforeEach(function () {
+        fallback = sinon.stub().callsArgWith(1, 'blob');
+        sinon.stub(client, 'get').callsArgWith(1, null, null);
+      });
+
+      it("calls the callback with the blob", function () {
+        var callbackMock = sinon.mock();
+        callbackMock.withArgs('blob');
+
+        subject('roflcopter.gif', callbackMock, fallback);
+
+        callbackMock.verify();
+      });
+
+      it("caches the result", function () {
+        var clientMock = sinon.mock(client);
+        clientMock.expects('set').withArgs('roflcopter.gif', 'blob');
+
+        subject('roflcopter.gif', function () {}, fallback);
+
+        clientMock.verify();
+      });
     });
   });
 });
