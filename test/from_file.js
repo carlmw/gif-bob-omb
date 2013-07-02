@@ -31,7 +31,7 @@ describe('fromFile', function () {
       .returns('fileRef');
     var imagemagickMock = sinon.mock(imagemagick);
     imagemagickMock.expects('resize')
-      .withArgs({ srcData: 'fileRef', height: 100, format: 'png' });
+      .withArgs({ srcData: 'fileRef', height: 100, format: 'jpg', quality: 0.5 });
 
     fromFile('notsureifserious.gif', function () {});
 
