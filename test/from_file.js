@@ -1,24 +1,26 @@
 var fs = require('fs'),
     mockery = require('mockery'),
+    expect = require('chai').expect,
     imagemagick = require('imagemagick'),
     queue = require('queue-async'),
     fromFile;
 
 describe('fromFile', function () {
-  var queueInst = { defer: function () {} },
+  var queueInst = {
+        defer: function (fn) { fn(function () {}); }
+      },
       queue = function () { return queueInst; };
   before(function () {
     mockery.enable();
     mockery.warnOnUnregistered(false);
     mockery.registerMock('queue-async', queue);
     fromFile = require('../lib/from_file');
-    sinon.stub(queueInst, 'defer').callsArgWith(0, function () {});
   });
 
   it("reads the file", function () {
     sinon.stub(imagemagick, 'resize');
     var fsMock = sinon.mock(fs)
-      .expects('readFileSync')
+      .expects('readFile')
       .withArgs('notsureifserious.gif');
 
     fromFile('notsureifserious.gif', function () {});
@@ -26,37 +28,72 @@ describe('fromFile', function () {
     fsMock.verify();
   });
 
-  it("resizes the file", function () {
-    sinon.stub(fs, 'readFileSync')
-      .returns('fileRef');
-    var imagemagickMock = sinon.mock(imagemagick);
-    imagemagickMock.expects('resize')
-      .withArgs({ srcData: 'fileRef', height: 100, format: 'jpg', quality: 0.5 });
+  describe("when the file is read successfully", function () {
+    it("resizes the file", function () {
+      sinon.stub(fs, 'readFile').callsArgWith(1, null, 'imageData');
 
-    fromFile('notsureifserious.gif', function () {});
+      var imagemagickMock = sinon.mock(imagemagick);
+      imagemagickMock.expects('resize')
+        .withArgs({ srcData: 'imageData', height: 100, format: 'jpg', quality: 0.5 });
 
-    imagemagickMock.verify();
+      fromFile('notsureifserious.gif', function () {});
+
+      imagemagickMock.verify();
+    });
+
+    it("calls the callback with the image data", function () {
+      var callbackMock = sinon.mock();
+      callbackMock.withArgs('blob');
+      sinon.stub(fs, 'readFile').callsArgWith(1, null, 'imageData');
+      sinon.stub(imagemagick, 'resize').callsArgWith(1, '', 'blob');
+
+      fromFile('notsureifserious.gif', callbackMock);
+
+      callbackMock.verify();
+    });
+
+    it("calls next", function () {
+      var nextMock = sinon.mock();
+      sinon.stub(queueInst, 'defer').callsArgWith(0, nextMock);
+      sinon.stub(fs, 'readFile').callsArg(1, null, 'imageData');
+      sinon.stub(imagemagick, 'resize').callsArgWith(1, '', 'blob');
+
+      fromFile('notsureifserious.gif', function () {});
+
+      nextMock.verify();
+    });
   });
 
-  it("calls the callback with the image data", function () {
-    var callbackMock = sinon.mock();
-    callbackMock.withArgs('blob');
-    sinon.stub(fs, 'readFileSync');
-    sinon.stub(imagemagick, 'resize').callsArgWith(1, '', 'blob');
+  describe("when the file read is unsuccessful", function () {
+    it("calls the callback", function () {
+      var callbackMock = sinon.mock();
+      callbackMock.withArgs('');
+      sinon.stub(fs, 'readFile').callsArgWith(1, 'whoops');
+      sinon.stub(imagemagick, 'resize');
 
-    fromFile('notsureifserious.gif', callbackMock);
+      fromFile('notsureifserious.gif', callbackMock);
 
-    callbackMock.verify();
-  });
+      callbackMock.verify();
+    });
 
-  it("calls next", function () {
-    var nextMock = sinon.mock();
-    queueInst.defer.callsArgWith(0, nextMock);
-    sinon.stub(fs, 'readFileSync');
-    sinon.stub(imagemagick, 'resize').callsArgWith(1, '', 'blob');
+    it("calls next", function () {
+      var nextMock = sinon.mock();
+      sinon.stub(queueInst, 'defer').callsArgWith(0, nextMock);
+      sinon.stub(fs, 'readFile').callsArgWith(1, 'whoops');
+      sinon.stub(imagemagick, 'resize');
 
-    fromFile('notsureifserious.gif', function () {});
+      fromFile('notsureifserious.gif', function () {});
 
-    nextMock.verify();
+      nextMock.verify();
+    });
+
+    it("doesn't try to resize the image", function () {
+      sinon.stub(imagemagick, 'resize');
+      sinon.stub(fs, 'readFile').callsArgWith(1, 'whoops');
+
+      fromFile('notsureifserious.gif', function () {});
+
+      expect(imagemagick.resize.called).to.equal(false);
+    })
   });
 });
