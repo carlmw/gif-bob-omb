@@ -9,9 +9,10 @@ To install:
 
     cp config.example.json config.json
     npm install
+    make
     node app.js
 
 To run the tests:
 
-    make
-    make test-acceptance
+    make test
+    make acceptance

@@ -15,7 +15,8 @@ var express = require('express'),
 module.exports = express()
   .set('view engine', 'html')
   .engine('html', hogan)
-  .get('/frame/:file', function (req, res, next) {
+  .use(express.static(__dirname + '/public'))
+  .get('/frame/:file', function (req, res) {
     var file = req.param('file');
     fromCache(imagePath + file, renderPreview(res), fromFile);
   })
