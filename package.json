@@ -8,7 +8,8 @@
     "redis": "~0.8.4",
     "queue-async": "~1.0.4",
     "browserify": "~2.23.1",
-    "emitter-component": "~1.0.1"
+    "emitter-component": "~1.0.1",
+    "aws-sdk": "~1.4.1"
   },
   "devDependencies": {
     "mocha": "~1.11.0",

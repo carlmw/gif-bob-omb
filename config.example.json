@@ -1,5 +1,12 @@
 {
   "targetHost": "http://gifserver.com",
   "port": "3000",
-  "originals": "path/to/gifs/"
+  "originals": "path/to/gifs/",
+  "s3": {
+    "accessKeyId": "akid",
+    "secretAccessKey": "secret",
+    "region": "eu-west-1"
+  },
+  "bucket": "gifs",
+  "assetHost": "http://s3-eu-west-1.amazonaws.com/"
 }

@@ -39,8 +39,10 @@ describe('fromFile', function () {
     });
 
     it("calls the callback with the image data", function () {
-      var callbackMock = sinon.mock();
-      callbackMock.withArgs('blob');
+      var Buffer = sinon.stub(global, 'Buffer'),
+          callbackMock = sinon.mock();
+      Buffer.prototype = { blobby: 'blob' };
+      callbackMock.withArgs(Buffer.prototype);
       sinon.stub(fs, 'readFile').callsArgWith(1, null, 'imageData');
       sinon.stub(imagemagick, 'resize').callsArgWith(1, '', 'blob');
 
