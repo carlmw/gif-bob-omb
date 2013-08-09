@@ -10,10 +10,14 @@
   }
   li {
     display: inline-block;
+  }
+  a {
+    display: inline-block;
     text-align: center;
     position: relative;
     margin: 8px;
     height: 100px;
+    text-decoration: none;
   }
   img {
     border-radius: 20px;
@@ -39,15 +43,11 @@
   .file-name:hover {
     opacity: 0;
   }
-  a {
-    display: block;
-    text-decoration: none;
-  }
   input {
     width: 400px;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
     font-size: 1.6em;
     padding: 0.2em;
     margin-bottom: 8px;
@@ -57,14 +57,10 @@
     outline: none;
   }
   ::-webkit-search-cancel-button {
-    -webkit-appearance: none;
-    position: relative;
-    height: 30px;
-    width: 30px;
-    border-radius: 15px;
-    background: #eee;
+    display: none;
   }
 </style>
+<input type="search" placeholder="E.g. sad" />
 <ul>
 {{#files}}
   <li>
