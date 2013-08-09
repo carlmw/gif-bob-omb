@@ -7,13 +7,15 @@
     "hogan-express": "~0.3.3",
     "redis": "~0.8.4",
     "queue-async": "~1.0.4",
-    "browserify": "~2.23.1"
+    "browserify": "~2.23.1",
+    "emitter-component": "~1.0.1"
   },
   "devDependencies": {
     "mocha": "~1.11.0",
     "chai": "~1.7.2",
     "sinon": "~1.7.3",
     "supertest": "~0.7.0",
-    "mockery": "~1.4.0"
+    "mockery": "~1.4.0",
+    "jsdom": "~0.8.3"
   }
 }
