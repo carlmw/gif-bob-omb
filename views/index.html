@@ -1,17 +1,23 @@
+<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 <style>
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
   body {
     background-color: #f9f9f9;
-    padding: 8px;
+    font-size: 16px;
   }
   ul {
     list-style: none;
     padding-left: 0;
-    margin: 0 0 0 -8px;
+    font-size: 0;
   }
   li {
     display: inline-block;
   }
   a {
+    font-size: 16px;
     display: inline-block;
     text-align: center;
     position: relative;
@@ -44,13 +50,14 @@
     opacity: 0;
   }
   input {
-    width: 400px;
+    width: 100%;
+    max-width: 460px;
     -webkit-appearance: textfield;
     -moz-appearance: textfield;
     appearance: textfield;
     font-size: 1.6em;
     padding: 0.2em;
-    margin-bottom: 8px;
+    margin: 16px 0 8px 8px;
     border-radius: 1em;
     border: 1px solid #ddd;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 0 0 2px #fff;
@@ -59,8 +66,29 @@
   ::-webkit-search-cancel-button {
     display: none;
   }
+  @media screen and (max-width: 740px) {
+    body {
+      padding-right: 18px;
+    }
+    li {
+      display: block;
+    }
+    a {
+      width: 100%;
+      height: auto;
+    }
+    img {
+      width: 100%;
+    }
+    .file-name {
+      font-size: 2em;
+      line-height: 2em;
+      top: auto;
+      vertical-align: bottom;
+    }
+  }
 </style>
-<input type="search" placeholder="E.g. sad" />
+<input type="search" placeholder="E.g. sad" autocapitalize="off" autocorrect="off" />
 <ul>
 {{#files}}
   <li>
