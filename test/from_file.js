@@ -1,18 +1,15 @@
 var fs = require('fs'),
     mockery = require('mockery'),
-    expect = require('chai').expect,
     imagemagick = require('imagemagick'),
     queue = require('queue-async'),
-    fromFile;
+    fromFile,
+    queueInst = {
+      defer: function (fn) { fn(function () {}); }
+    },
+    queue = function () { return queueInst; };
 
 describe('fromFile', function () {
-  var queueInst = {
-        defer: function (fn) { fn(function () {}); }
-      },
-      queue = function () { return queueInst; };
   before(function () {
-    mockery.enable();
-    mockery.warnOnUnregistered(false);
     mockery.registerMock('queue-async', queue);
     fromFile = require('../lib/from_file');
   });
@@ -94,6 +91,6 @@ describe('fromFile', function () {
       fromFile('notsureifserious.gif', function () {});
 
       expect(imagemagick.resize.called).to.equal(false);
-    })
+    });
   });
 });

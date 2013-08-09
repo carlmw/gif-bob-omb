@@ -1,4 +1,5 @@
 {
   "originals": "/test/acceptance/fixtures",
+  "port": "3002",
   "targetHost": "http://lols.com"
 }

@@ -6,15 +6,8 @@ var request = require('supertest'),
 
 describe('acceptance', function () {
   before(function () {
-    mockery.enable();
-    mockery.warnOnUnregistered(false);
     mockery.registerSubstitute('./config.json', './test/acceptance/config.json');
     app = require('../../app');
-  });
-
-  after(function () {
-    mockery.deregisterAll();
-    mockery.disable();
   });
 
   describe('GET /', function(){
