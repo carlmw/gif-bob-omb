@@ -32,4 +32,13 @@ describe('acceptance', function () {
         .expect('Location', 'http://aws.com/hireme.png', done);
     });
   });
+
+  describe('GET /manifest.appcache', function () {
+    it('renders a manifest', function (done) {
+      request(app)
+        .get('/manifest.appcache')
+        .expect(200)
+        .expect('Content-Type', 'text/cache-manifest', done);
+    });
+  });
 });

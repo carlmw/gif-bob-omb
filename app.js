@@ -10,7 +10,8 @@ var express = require('express'),
     fromFile = require('./lib/from_file'),
     imageList = require('./lib/image_list'),
     renderFileList = require('./lib/render_file_list'),
-    renderPreview = require('./lib/render_preview');
+    renderPreview = require('./lib/render_preview'),
+    renderManifest = require('./lib/render_manifest');
 
 module.exports = express()
   .set('view engine', 'html')
@@ -22,5 +23,8 @@ module.exports = express()
   })
   .get('/', function (req, res) {
     imageList(imagePath, renderFileList(res, config.targetHost));
+  })
+  .get('/manifest.appcache', function (req, res) {
+    imageList(imagePath, renderManifest(res));
   })
   .listen(config.port);
