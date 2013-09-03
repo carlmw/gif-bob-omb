@@ -15,24 +15,23 @@
     ul {
       list-style: none;
       padding-left: 0;
-      font-size: 0;
     }
     li {
-      display: inline-block;
+      display: block;
+      float: left;
     }
     a {
-      font-size: 16px;
-      display: inline-block;
+      display: block;
       text-align: center;
       position: relative;
       margin: 8px;
-      height: 100px;
+      height: 96px;
       text-decoration: none;
     }
     img {
       border-radius: 20px;
-      width: 100px;
-      height: 100px;
+      width: 96px;
+      height: 96px;
     }
     .file-name {
       -webkit-transition: 0.1s opacity;
@@ -56,11 +55,13 @@
       opacity: 0;
     }
     input {
-      width: 100%;
       max-width: 460px;
       -webkit-appearance: textfield;
       -moz-appearance: textfield;
       appearance: textfield;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
       font-size: 1.6em;
       padding: 0.2em;
       margin: 16px 0 8px 8px;
@@ -73,12 +74,6 @@
       display: none;
     }
     @media screen and (max-width: 740px) {
-      body {
-        padding-right: 18px;
-      }
-      ul {
-        padding-left: 4px;
-      }
       a {
         margin: 4px;
       }
@@ -87,6 +82,9 @@
         line-height: 2em;
         top: auto;
         vertical-align: bottom;
+      }
+      input {
+        margin-left: 4px;
       }
     }
   </style>

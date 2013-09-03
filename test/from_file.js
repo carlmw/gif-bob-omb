@@ -40,7 +40,7 @@ describe('fromFile', function () {
   it("crops the image", function () {
     var imMock = sinon.mock(imApi);
     imMock.expects('resize')
-      .withArgs(100, 100)
+      .withArgs(96, 96)
       .returns(imApi);
     fromFile('notsureifserious.gif', function () {});
 
