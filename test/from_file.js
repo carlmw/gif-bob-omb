@@ -1,98 +1,90 @@
 var fs = require('fs'),
     mockery = require('mockery'),
-    imagemagick = require('imagemagick'),
     queue = require('queue-async'),
     fromFile,
     queueInst = {
       defer: function (fn) { fn(function () {}); }
     },
-    queue = function () { return queueInst; };
+    queue = function () { return queueInst; },
+    im,
+    imApi = {
+      resize: function () { return imApi; },
+      quality: function () { return imApi; },
+      toBuffer: function () {}
+    };
 
 describe('fromFile', function () {
   before(function () {
+    im = sinon.stub().returns(imApi);
+    gm = { subClass: sinon.stub().returns(im) };
+    mockery.registerMock('gm', gm);
     mockery.registerMock('queue-async', queue);
     fromFile = require('../lib/from_file');
   });
 
-  it("reads the file", function () {
-    sinon.stub(imagemagick, 'resize');
-    var fsMock = sinon.mock(fs)
-      .expects('readFile')
-      .withArgs('notsureifserious.gif');
+  beforeEach(function () {
+    im.reset();
+  });
 
+  it("uses imagemagick", function () {
+    expect(gm.subClass).to.have.been
+      .calledWith({ imageMagick: true });
+  });
+
+  it("reads the ffirst frame", function () {
     fromFile('notsureifserious.gif', function () {});
 
-    fsMock.verify();
+    expect(im).to.have.been.calledWith('notsureifserious.gif[0]');
   });
 
-  describe("when the file is read successfully", function () {
-    it("resizes the file", function () {
-      sinon.stub(fs, 'readFile').callsArgWith(1, null, 'imageData');
+  it("crops the image", function () {
+    var imMock = sinon.mock(imApi);
+    imMock.expects('resize')
+      .withArgs(100, 100)
+      .returns(imApi);
+    fromFile('notsureifserious.gif', function () {});
 
-      var imagemagickMock = sinon.mock(imagemagick);
-      imagemagickMock.expects('resize')
-        .withArgs({ srcData: 'imageData', height: 100, format: 'jpg', quality: 0.5 });
+    imMock.verify();
+  });
 
-      fromFile('notsureifserious.gif', function () {});
+  it("sets the quality", function () {
+    var imMock = sinon.mock(imApi);
+    imMock.expects('quality')
+      .withArgs(30)
+      .returns(imApi);
+    fromFile('notsureifserious.gif', function () {});
 
-      imagemagickMock.verify();
-    });
+    imMock.verify();
+  });
 
-    it("calls the callback with the image data", function () {
-      var Buffer = sinon.stub(global, 'Buffer'),
-          callbackMock = sinon.mock();
-      Buffer.prototype = { blobby: 'blob' };
-      callbackMock.withArgs(Buffer.prototype);
-      sinon.stub(fs, 'readFile').callsArgWith(1, null, 'imageData');
-      sinon.stub(imagemagick, 'resize').callsArgWith(1, '', 'blob');
+  describe("when no error occurs", function () {
+    it("calls the callback with a buffer", function () {
+      sinon.stub(imApi, 'toBuffer').callsArgWith(0, null, 'buffer');
+      var callback = sinon.mock();
+      callback.withArgs('buffer');
+      fromFile('notsureifserious.gif', callback);
 
-      fromFile('notsureifserious.gif', callbackMock);
-
-      callbackMock.verify();
-    });
-
-    it("calls next", function () {
-      var nextMock = sinon.mock();
-      sinon.stub(queueInst, 'defer').callsArgWith(0, nextMock);
-      sinon.stub(fs, 'readFile').callsArg(1, null, 'imageData');
-      sinon.stub(imagemagick, 'resize').callsArgWith(1, '', 'blob');
-
-      fromFile('notsureifserious.gif', function () {});
-
-      nextMock.verify();
+      callback.verify();
     });
   });
 
-  describe("when the file read is unsuccessful", function () {
-    it("calls the callback", function () {
-      var callbackMock = sinon.mock();
-      callbackMock.withArgs('');
-      sinon.stub(fs, 'readFile').callsArgWith(1, 'whoops');
-      sinon.stub(imagemagick, 'resize');
+  describe("when an error occurs", function () {
+    it("calls the callback with an empty string", function () {
+      sinon.stub(imApi, 'toBuffer').callsArgWith(0, 'balls', null);
+      var callback = sinon.mock();
+      callback.withArgs('');
+      fromFile('notsureifserious.gif', callback);
 
-      fromFile('notsureifserious.gif', callbackMock);
-
-      callbackMock.verify();
+      callback.verify();
     });
+  });
 
-    it("calls next", function () {
-      var nextMock = sinon.mock();
-      sinon.stub(queueInst, 'defer').callsArgWith(0, nextMock);
-      sinon.stub(fs, 'readFile').callsArgWith(1, 'whoops');
-      sinon.stub(imagemagick, 'resize');
+  it("calls next", function () {
+    var nextMock = sinon.mock();
+    sinon.stub(queueInst, 'defer').callsArgWith(0, nextMock);
+    sinon.stub(imApi, 'toBuffer').callsArgWith(0, 'balls', null);
+    fromFile('notsureifserious.gif', function () {});
 
-      fromFile('notsureifserious.gif', function () {});
-
-      nextMock.verify();
-    });
-
-    it("doesn't try to resize the image", function () {
-      sinon.stub(imagemagick, 'resize');
-      sinon.stub(fs, 'readFile').callsArgWith(1, 'whoops');
-
-      fromFile('notsureifserious.gif', function () {});
-
-      expect(imagemagick.resize.called).to.equal(false);
-    });
+    nextMock.verify();
   });
 });

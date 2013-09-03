@@ -1,6 +1,10 @@
 var sinonLib = require('sinon'),
-    expect = require('chai').expect,
+    chai = require('chai'),
+    expect = chai.expect,
+    sinonChai = require("sinon-chai"),
     mockery = require('mockery');
+
+chai.use(sinonChai);
 
 beforeEach(function() {
   global.sinon = sinonLib.sandbox.create();
