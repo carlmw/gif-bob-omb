@@ -2,5 +2,6 @@
   "originals": "/test/acceptance/fixtures",
   "port": "3002",
   "targetHost": "http://lols.com",
-  "assetHost": "http://aws.com/"
+  "assetHost": "http://aws.com/",
+  "bucket": "gifbobomb"
 }

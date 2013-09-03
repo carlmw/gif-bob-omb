@@ -1,12 +1,22 @@
-var renderManifest = require('../lib/render_manifest')
+var mockery = require('mockery');
 
 describe('renderManifest', function () {
-  var response = { render: function () {}, set: function () {} };
+  var response = { render: function () {}, set: function () {} },
+      renderManifest;
+
+  before(function () {
+    mockery.registerSubstitute('../config.json', '../test/acceptance/config.json');
+    renderManifest = require('../lib/render_manifest');
+  });
 
   it("renders", function () {
     responseMock = sinon.mock(response);
     responseMock.expects('render')
-      .withArgs('manifest', { files: ['derp.gif'], version: '3c193e74056a32011598d043e66891428c98ef3a' });
+      .withArgs('manifest', {
+        files: ['derp.gif'],
+        version: '3c193e74056a32011598d043e66891428c98ef3a',
+        host: 'http://aws.com/gifbobomb/'
+      });
 
     renderManifest(response)(['derp.gif']);
 
