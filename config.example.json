@@ -1,7 +1,7 @@
 {
   "targetHost": "http://gifserver.com",
   "port": "3000",
-  "originals": "path/to/gifs/",
+  "originals": "path/to/gifs",
   "s3": {
     "accessKeyId": "akid",
     "secretAccessKey": "secret",

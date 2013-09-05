@@ -1,7 +1,7 @@
 var express = require('express'),
     config = require('./config.json'),
     hogan = require('hogan-express'),
-    imagePath = __dirname + config.originals + '/';
+    imagePath = require('path').join(__dirname, config.originals);
 
 module.exports = express()
   .set('view engine', 'html')
